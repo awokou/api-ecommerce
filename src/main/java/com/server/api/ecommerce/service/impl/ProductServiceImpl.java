@@ -140,7 +140,7 @@ public class ProductServiceImpl implements ProductService {
             throw new APIException("Product not found with productId: " + productId);
         }
         product.setImage(productFromDB.getImage());
-        product.setProductId(productId);
+        product.setId(productId);
         product.setCategory(productFromDB.getCategory());
         double specialPrice = product.getPrice() - ((product.getDiscount() * 0.01) * product.getPrice());
         product.setSpecialPrice(specialPrice);
@@ -205,7 +205,7 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product", "productId", productId));
         List<Cart> carts = cartRepository.findCartsByProductId(productId);
-        carts.forEach(cart -> cartService.deleteProductFromCart(cart.getCartId(), productId));
+        carts.forEach(cart -> cartService.deleteProductFromCart(cart.getId(), productId));
         productRepository.delete(product);
         return "Product with productId: " + productId + " deleted successfully !!!";
     }

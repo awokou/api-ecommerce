@@ -29,23 +29,12 @@ public class AddressServiceImpl implements AddressService {
     }
 
     @Override
-    public AddressDto createAddress(AddressDto addressDto) {
-        String country = addressDto.getCountry();
-        String state = addressDto.getState();
-        String city = addressDto.getCity();
-        String pincode = addressDto.getPincode();
-        String street = addressDto.getStreet();
-        String buildingName = addressDto.getBuildingName();
-
-        Address addressFromDB = addressRepository.findByCountryAndStateAndCityAndPincodeAndStreetAndBuildingName(country,
-                state, city, pincode, street, buildingName);
-
-        if (addressFromDB != null) {
-            throw new APIException("Address already exists with addressId: " + addressFromDB.getId());
+    public AddressDto createAddress(Address address) {
+        Address savedAddress = addressRepository.findByCountry(address.getCountry());
+        if (savedAddress != null) {
+            throw new APIException("Address already exists with addressId: " + address.getCountry());
         }
-
-        Address address = modelMapper.map(addressDto, Address.class);
-        Address savedAddress = addressRepository.save(address);
+        savedAddress = addressRepository.save(address);
         return modelMapper.map(savedAddress, AddressDto.class);
     }
 
@@ -64,44 +53,19 @@ public class AddressServiceImpl implements AddressService {
     }
 
     @Override
-    public AddressDto updateAddress(Long id, Address address) {
-        Address addressFromDB = addressRepository.findByCountryAndStateAndCityAndPincodeAndStreetAndBuildingName(
-                address.getCountry(), address.getState(), address.getCity(), address.getPincode(), address.getStreet(),
-                address.getBuildingName());
+    public AddressDto updateAddress(Long addressId, Address address) {
+         addressRepository.findById(addressId)
+                .orElseThrow(() -> new ResourceNotFoundException("Address", "addressId", addressId));
 
-        if (addressFromDB == null) {
-            addressFromDB = addressRepository.findById(id)
-                    .orElseThrow(() -> new ResourceNotFoundException("Address", "addressId", id));
-
-            addressFromDB.setCountry(address.getCountry());
-            addressFromDB.setState(address.getState());
-            addressFromDB.setCity(address.getCity());
-            addressFromDB.setPincode(address.getPincode());
-            addressFromDB.setStreet(address.getStreet());
-            addressFromDB.setBuildingName(address.getBuildingName());
-
-            Address updatedAddress = addressRepository.save(addressFromDB);
-
-            return modelMapper.map(updatedAddress, AddressDto.class);
-        } else {
-            List<User> users = userRepository.findByAddress(id);
-            final Address a = addressFromDB;
-
-            users.forEach(user -> user.getAddresses().add(a));
-
-            deleteAddress(id);
-
-            return modelMapper.map(addressFromDB, AddressDto.class);
-        }
+        address.setId(addressId);
+        return modelMapper.map(addressRepository.save(address), AddressDto.class);
     }
 
     @Override
     public String deleteAddress(Long id) {
         Address addressFromDB = addressRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Address", "addressId", id));
-
         List<User> users = userRepository.findByAddress(id);
-
         users.forEach(user -> {
             user.getAddresses().remove(addressFromDB);
             userRepository.save(user);

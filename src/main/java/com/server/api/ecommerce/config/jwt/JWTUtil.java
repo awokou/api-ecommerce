@@ -30,10 +30,10 @@ public class JWTUtil {
     public String validateTokenAndRetrieveSubject(String token) throws JWTVerificationException {
         JWTVerifier verifier = JWT.require(Algorithm.HMAC256(secret))
                 .withSubject("User Details")
-                .withIssuer("Event Scheduler").build();
+                .withIssuer("Event Scheduler")
+                .build();
 
         DecodedJWT jwt = verifier.verify(token);
-
         return jwt.getClaim("email").asString();
     }
 }

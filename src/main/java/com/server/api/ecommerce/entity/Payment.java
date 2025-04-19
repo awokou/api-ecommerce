@@ -7,16 +7,16 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity
 @Data
-@Table(name = "payments")
+@Entity
 @AllArgsConstructor
 @NoArgsConstructor
-public class Payment {
+@Table(name = "payments")
+public class Payment  {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long paymentId;
+    private Long id;
 
     @OneToOne(mappedBy = "payment", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     private Order order;

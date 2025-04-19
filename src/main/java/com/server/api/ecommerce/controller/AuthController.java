@@ -52,7 +52,6 @@ public class AuthController {
                 credentials.getEmail(), credentials.getPassword());
 
         authenticationManager.authenticate(authCredentials);
-
         String token = jwtUtil.generateToken(credentials.getEmail());
 
         return Collections.singletonMap("jwt-token", token);

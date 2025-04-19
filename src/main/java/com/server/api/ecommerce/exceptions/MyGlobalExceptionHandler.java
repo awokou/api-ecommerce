@@ -24,14 +24,14 @@ public class MyGlobalExceptionHandler {
     public ResponseEntity<APIResponse> myResourceNotFoundException(ResourceNotFoundException e) {
         String message = e.getMessage();
         APIResponse res = new APIResponse(message, false);
-        return new ResponseEntity<APIResponse>(res, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(res, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(APIException.class)
     public ResponseEntity<APIResponse> myAPIException(APIException e) {
         String message = e.getMessage();
         APIResponse res = new APIResponse(message, false);
-        return new ResponseEntity<APIResponse>(res, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(res, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -45,7 +45,7 @@ public class MyGlobalExceptionHandler {
             res.put(fieldName, message);
         });
 
-        return new ResponseEntity<Map<String, String>>(res, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(res, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
@@ -59,24 +59,24 @@ public class MyGlobalExceptionHandler {
             res.put(fieldName, message);
         });
 
-        return new ResponseEntity<Map<String, String>>(res, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(res, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<String> myAuthenticationException(AuthenticationException e) {
         String res = e.getMessage();
-        return new ResponseEntity<String>(res, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(res, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(MissingPathVariableException.class)
     public ResponseEntity<APIResponse> myMissingPathVariableException(MissingPathVariableException e) {
         APIResponse res = new APIResponse(e.getMessage(), false);
-        return new ResponseEntity<APIResponse>(res, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(res, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<APIResponse> myDataIntegrityException(DataIntegrityViolationException e) {
         APIResponse res = new APIResponse(e.getMessage(), false);
-        return new ResponseEntity<APIResponse>(res, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(res, HttpStatus.BAD_REQUEST);
     }
 }

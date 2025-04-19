@@ -5,9 +5,9 @@ import com.server.api.ecommerce.dto.AddressDto;
 import com.server.api.ecommerce.entity.Address;
 
 public interface AddressService {
-    AddressDto createAddress(AddressDto addressDto);
+    AddressDto createAddress(Address address);
     List<AddressDto> getAddresses();
     AddressDto getAddress(Long id);
-    AddressDto updateAddress(Long id, Address address);
+    AddressDto updateAddress(Long addressId, Address address);
     String deleteAddress(Long id);
 }

@@ -1,7 +1,6 @@
 package com.server.api.ecommerce.service.impl;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import com.server.api.ecommerce.dto.CategoryDto;
 import com.server.api.ecommerce.dto.reponse.CategoryResponse;
@@ -57,7 +56,7 @@ public class CategoryServiceImpl implements CategoryService {
         }
 
         List<CategoryDto> categoryDTOs = categories.stream()
-                .map(category -> modelMapper.map(category, CategoryDto.class)).collect(Collectors.toList());
+                .map(category -> modelMapper.map(category, CategoryDto.class)).toList();
 
         CategoryResponse categoryResponse = new CategoryResponse();
         categoryResponse.setContent(categoryDTOs);
@@ -75,7 +74,7 @@ public class CategoryServiceImpl implements CategoryService {
         categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new ResourceNotFoundException("Category", "categoryId", categoryId));
 
-        category.setCategoryId(categoryId);
+        category.setId(categoryId);
         return modelMapper.map(categoryRepository.save(category), CategoryDto.class);
     }
 
@@ -84,7 +83,7 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new ResourceNotFoundException("Category", "categoryId", categoryId));
         List<Product> products = category.getProducts();
-        products.forEach(product -> productService.deleteProduct(product.getProductId()));
+        products.forEach(product -> productService.deleteProduct(product.getId()));
         categoryRepository.delete(category);
         return "Category with categoryId: " + categoryId + " deleted successfully !!!";
     }

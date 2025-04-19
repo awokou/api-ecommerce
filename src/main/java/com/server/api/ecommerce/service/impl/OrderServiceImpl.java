@@ -85,7 +85,7 @@ public class OrderServiceImpl implements OrderService {
         cart.getCartItems().forEach(item -> {
             int quantity = item.getQuantity();
             Product product = item.getProduct();
-            cartService.deleteProductFromCart(cartId, item.getProduct().getProductId());
+            cartService.deleteProductFromCart(cartId, item.getProduct().getId());
             product.setQuantity(product.getQuantity() - quantity);
         });
 

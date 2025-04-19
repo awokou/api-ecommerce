@@ -5,6 +5,7 @@ import java.util.List;
 import com.server.api.ecommerce.config.AppConstants;
 import com.server.api.ecommerce.entity.Role;
 import com.server.api.ecommerce.repository.RoleRepository;
+import com.server.api.ecommerce.repository.UserRepository;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
@@ -15,13 +16,15 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
-@SecurityScheme(name = "E-Commerce Application", scheme = "bearer", type = SecuritySchemeType.HTTP, in = SecuritySchemeIn.HEADER)
+@SecurityScheme(name = "E-Commerce", scheme = "bearer", type = SecuritySchemeType.HTTP, in = SecuritySchemeIn.HEADER)
 public class ApiEcommerceApplication implements CommandLineRunner {
 
 	private final RoleRepository roleRepository;
+	private final UserRepository userRepository;
 
-    public ApiEcommerceApplication(RoleRepository roleRepository) {
+    public ApiEcommerceApplication(RoleRepository roleRepository, UserRepository userRepository) {
         this.roleRepository = roleRepository;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -40,20 +43,16 @@ public class ApiEcommerceApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		try {
-			Role adminRole = new Role();
-			adminRole.setId(AppConstants.ADMIN_ID);
-			adminRole.setName("ADMIN");
+		Role adminRole = new Role();
+		adminRole.setId(AppConstants.ADMIN_ID);
+		adminRole.setName("ADMIN");
 
-			Role userRole = new Role();
-			userRole.setId(AppConstants.USER_ID);
-			userRole.setName("USER");
+		Role userRole = new Role();
+		userRole.setId(AppConstants.USER_ID);
+		userRole.setName("USER");
 
-			List<Role> roles = List.of(adminRole, userRole);
-			List<Role> savedRoles = roleRepository.saveAll(roles);
-			savedRoles.forEach(System.out::println);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		List<Role> roles = List.of(adminRole, userRole);
+		List<Role> savedRoles = roleRepository.saveAll(roles);
+		savedRoles.forEach(System.out::println);
 	}
 }

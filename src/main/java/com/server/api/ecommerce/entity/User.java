@@ -8,22 +8,25 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-@Entity
-@Table(name = "users")
+/**
+ * User entity class representing a user in the system.
+ * This class is used to map the user data to the database table "users".
+ * It includes fields for user details, validation annotations, and relationships with other entities.
+ */
 @Data
+@Entity
 @NoArgsConstructor
 @AllArgsConstructor
-public class User implements Serializable {
+@Table(name = "users")
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userId;
+    private Long id;
 
     @Size(min = 5, max = 20, message = "First Name must be between 5 and 30 characters long")
     @Pattern(regexp = "^[a-zA-Z]*$", message = "First Name must not contain numbers or special characters")

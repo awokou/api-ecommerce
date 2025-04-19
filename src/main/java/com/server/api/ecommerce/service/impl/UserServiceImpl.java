@@ -8,7 +8,6 @@ import com.server.api.ecommerce.dto.UserDto;
 import com.server.api.ecommerce.dto.reponse.UserResponse;
 import com.server.api.ecommerce.entity.*;
 import com.server.api.ecommerce.exceptions.APIException;
-import com.server.api.ecommerce.exceptions.ErrorMessages;
 import com.server.api.ecommerce.exceptions.ResourceNotFoundException;
 import com.server.api.ecommerce.repository.AddressRepository;
 import com.server.api.ecommerce.repository.RoleRepository;
@@ -31,7 +30,8 @@ import java.util.stream.Collectors;
 @Transactional
 @Service
 public class UserServiceImpl implements UserService {
-
+    public static final String USER = "User";
+    public static final String USER_ID = "userId";
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final AddressRepository addressRepository;
@@ -108,7 +108,7 @@ public class UserServiceImpl implements UserService {
 
             return dto;
 
-        }).collect(Collectors.toList());
+        }).toList();
 
         UserResponse userResponse = new UserResponse();
         userResponse.setContent(userDTOs);
@@ -124,7 +124,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto getUserById(Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException(ErrorMessages.USER, ErrorMessages.USER_ID, userId));
+                .orElseThrow(() -> new ResourceNotFoundException(USER,USER_ID, userId));
 
         UserDto userDto = modelMapper.map(user, UserDto.class);
         userDto.setAddress(modelMapper.map(user.getAddresses().stream().findFirst().get(), AddressDto.class));
@@ -142,7 +142,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto updateUser(Long userId, UserDto userDto) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException(ErrorMessages.USER, ErrorMessages.USER_ID, userId));
+                .orElseThrow(() -> new ResourceNotFoundException(USER,USER_ID, userId));
 
         String encodedPass = passwordEncoder.encode(userDto.getPassword());
 
@@ -181,12 +181,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public String deleteUser(Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException(ErrorMessages.USER, ErrorMessages.USER_ID, userId));
+                .orElseThrow(() -> new ResourceNotFoundException(USER,USER_ID, userId));
 
         List<CartItem> cartItems = user.getCart().getCartItems();
-        Long cartId = user.getCart().getCartId();
+        Long cartId = user.getCart().getId();
         cartItems.forEach(item -> {
-            Long productId = item.getProduct().getProductId();
+            Long productId = item.getProduct().getId();
             cartService.deleteProductFromCart(cartId, productId);
         });
         userRepository.delete(user);

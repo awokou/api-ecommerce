@@ -1,6 +1,5 @@
 package com.server.api.ecommerce.dto;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -1,5 +1,6 @@
 package com.server.api.ecommerce.config;
 
+import java.io.Serial;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,15 +17,16 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserInfoConfig implements UserDetails {
+public class UserInfo implements UserDetails {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private String email;
     private String password;
     private List<GrantedAuthority> authorities;
 
-    public UserInfoConfig(User user) {
+    public UserInfo(User user) {
         this.email = user.getEmail();
         this.password = user.getPassword();
         this.authorities = user.getRoles().stream().map(role -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toList());

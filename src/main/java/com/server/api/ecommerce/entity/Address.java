@@ -1,5 +1,6 @@
 package com.server.api.ecommerce.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -7,16 +8,19 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
-@Table(name = "addresses")
+/**
+ * Address entity class representing an address in the system.
+ * This class is used to store address details for users.
+ */
 @Data
+@Entity
 @NoArgsConstructor
 @AllArgsConstructor
-public class Address implements Serializable {
+@Table(name = "addresses")
+public class Address  {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,6 +50,7 @@ public class Address implements Serializable {
     @Size(min = 6, message = "Pincode must contain atleast 6 characters")
     private String pincode;
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "addresses")
     private List<User> users = new ArrayList<>();
 

@@ -3,7 +3,7 @@ package com.server.api.ecommerce.config.jwt;
 import java.io.IOException;
 
 import com.server.api.ecommerce.config.UserDetailsServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,32 +20,29 @@ import jakarta.servlet.http.HttpServletResponse;
 @Service
 public class JWTFilter extends OncePerRequestFilter {
 
-    @Autowired
-    private JWTUtil jwtUtil;
+    private final JWTUtil jwtUtil;
+    private final UserDetailsServiceImpl userDetailsServiceImpl;
 
-    @Autowired
-    private UserDetailsServiceImpl userDetailsServiceImpl;
+    public JWTFilter(JWTUtil jwtUtil, UserDetailsServiceImpl userDetailsServiceImpl) {
+        this.jwtUtil = jwtUtil;
+        this.userDetailsServiceImpl = userDetailsServiceImpl;
+    }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+    protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull  FilterChain filterChain)
             throws ServletException, IOException {
 
         String authHeader = request.getHeader("Authorization");
-
         if (authHeader != null && !authHeader.isBlank() && authHeader.startsWith("Bearer ")) {
             String jwt = authHeader.substring(7);
-
-            if (jwt == null || jwt.isBlank()) {
+            if (jwt.isBlank()) {
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invlaid JWT token in Bearer Header");
             } else {
                 try {
                     String email = jwtUtil.validateTokenAndRetrieveSubject(jwt);
-
                     UserDetails userDetails = userDetailsServiceImpl.loadUserByUsername(email);
-
                     UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
                             new UsernamePasswordAuthenticationToken(email, userDetails.getPassword(), userDetails.getAuthorities());
-
                     if (SecurityContextHolder.getContext().getAuthentication() == null) {
                         SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
                     }

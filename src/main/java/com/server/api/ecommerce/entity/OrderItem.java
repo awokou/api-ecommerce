@@ -5,11 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity
 @Data
-@Table(name = "order_items")
+@Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "order_items")
 public class OrderItem {
 
     @Id

@@ -10,12 +10,12 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
-@Table(name = "orders")
 @Data
+@Entity
 @NoArgsConstructor
 @AllArgsConstructor
-public class Order {
+@Table(name = "orders")
+public class Order  {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
